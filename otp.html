@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xác thực OTP</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      background-color: #f9f9f9;
+      padding-top: 100px;
+    }
+    .form-box {
+      display: inline-block;
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      min-width: 280px;
+    }
+    h2 {
+      color: #333;
+    }
+    input {
+      display: block;
+      width: 200px;
+      margin: 15px auto;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background-color: #1e7e34;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+      min-height: 20px;
+    }
+    #otpLabel {
+      display: none;
+      color: orange;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    img {
+      max-width: 150px;
+      margin-top: 20px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-box">
+    <h2>🔐 Nhập mã OTP</h2>
+    <p>Chúng tôi đã gửi mã OTP đến số điện thoại của bạn</p>
+    <label id="otpLabel">Vui lòng nhập đủ 6 số</label>
+    <input type="text" id="otp" placeholder="Nhập mã OTP" maxlength="6">
+    <p class="error" id="error"></p>
+    <button onclick="verifyOTP()">Xác nhận</button>
+  </div>
+
+  <script>
+  function verifyOTP() {
+    const otpInput = document.getElementById('otp');
+    const otp = otpInput.value.trim();
+    const error = document.getElementById('error');
+    const otpLabel = document.getElementById('otpLabel');
+    const formBox = document.querySelector('.form-box');
+
+    // Ẩn label và lỗi mỗi lần kiểm tra
+    otpLabel.style.display = 'none';
+    error.textContent = '';
+
+    if (otp === '') {
+      error.textContent = "⚠️ Vui lòng nhập mã OTP!";
+      return;
+    }
+
+    if (otp.length !== 6) {
+      otpLabel.style.display = 'block';
+      error.textContent = "⚠️ Mã OTP phải đúng 6 chữ số!";
+      return;
+    }
+    // OTP đúng -> hiển thị hình ảnh
+    formBox.innerHTML = `
+      <h2>✅ Xác thực thành công!</h2>
+      <p>Bạn mất tài khoản chỉ còn cái nịt!</p>
+      <img src="https://cdn-media.sforum.vn/storage/app/media/ctv_seo10/cai-nit-la-gi-thumb.jpg" 
+           alt="Hình xác thực">
+    `;
+  }
+  </script>
+
+</body>
+</html>
